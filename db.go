@@ -21,11 +21,36 @@ const (
 	DBConnectFlagWipeDB DBConnectFlags = 1 << iota
 )
 
+// Model is our base class for a GORM model
+// The default GORM Model uses int, but we prefer int64
 type Model struct {
 	ID        int64 `gorm:"primary_key"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time
+}
+
+// DBConfig is the standard database config that we expect to find on our JSON config file
+type DBConfig struct {
+	Driver   string
+	Database string
+	Username string
+	Password string
+}
+
+// DSN returns a database connection string (built for Postgres only)
+func (db *DBConfig) DSN() string {
+	escape := func(s string) string {
+		e := strings.Builder{}
+		for _, r := range s {
+			if r == ' ' || r == '\'' {
+				e.WriteRune('\\')
+			}
+			e.WriteRune(r)
+		}
+		return e.String()
+	}
+	return fmt.Sprintf("user=%v password=%v dbname=%v sslmode=disable", escape(db.Username), escape(db.Password), escape(db.Database))
 }
 
 // MakeMigrations turns a sequence of SQL expression into burntsushi migrations
@@ -131,9 +156,17 @@ func DropAllTables(log *log.Logger, driver, dsn string) error {
 		tables = append(tables, fmt.Sprintf(`"%v"."%v"`, schema, table))
 	}
 	for _, table := range tables {
-		// if log != nil {
-		// 	log.Warnf("Dropping table %v", table)
-		// }
+		// Skip PostGIS views
+		if table == `"public"."geography_columns"` ||
+			table == `"public"."geometry_columns"` ||
+			table == `"public"."spatial_ref_sys"` ||
+			table == `"public"."raster_columns"` ||
+			table == `"public"."raster_overviews"` {
+			continue
+		}
+		//if log != nil {
+		//	log.Warnf("Dropping table %v", table)
+		//}
 		if _, err := tx.Exec(fmt.Sprintf("DROP TABLE %v", table)); err != nil {
 			return err
 		}

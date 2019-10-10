@@ -70,6 +70,19 @@ func ParseID(s string) int64 {
 	return id
 }
 
+// ReadJSON reads the body of the request, and unmarshals it into 'obj'
+func ReadJSON(r *http.Request, obj interface{}) {
+	if r.Body == nil {
+		Panic(http.StatusBadRequest, "ReadJSON failed: Request body is empty")
+	}
+	defer r.Body.Close()
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(obj)
+	if err != nil {
+		Panic(http.StatusBadRequest, "ReadJSON failed: Failed to decode JSON - "+err.Error())
+	}
+}
+
 // SendJSON encodes 'obj' to JSON, and sends it as an HTTP application/json response
 func SendJSON(w http.ResponseWriter, obj interface{}) {
 	w.Header().Set("Content-Type", "application/json")
