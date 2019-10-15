@@ -8,6 +8,10 @@ github.com/IMQS/gowinsvc v0.0.0-20171019081213-88eed8ddfe95 h1:UFPSgk5/RyJWpCTKp
 github.com/IMQS/gowinsvc v0.0.0-20171019081213-88eed8ddfe95/go.mod h1:b69ORxZbSjMy1Jsk8LCZ9JWNo2iIl5VXQVmp3jdKIMY=
 github.com/IMQS/log v1.0.0 h1:Cb4MXJZsnUSzDWRe4UOPvc4oKTh3nunb2MeRhAOaE3c=
 github.com/IMQS/log v1.0.0/go.mod h1:NTJ+eKRXwfBr8tRKA7/JsTKeTqHluJkuZsD7YotVj48=
+github.com/IMQS/log v1.0.1 h1:jye0sZbPQj9psms0dAzZJK3yF3ldCNNVQEX8mEcWuS8=
+github.com/IMQS/log v1.0.1/go.mod h1:NTJ+eKRXwfBr8tRKA7/JsTKeTqHluJkuZsD7YotVj48=
+github.com/IMQS/serviceauth v1.0.0 h1:eDLkG2ETp1DZNuULa4xIYhBTPGOApqNwJrH64Ld6fPk=
+github.com/IMQS/serviceauth v1.0.0/go.mod h1:k9X6RfjZyFzhAaB6fjFuBdbQRkzlAj7Vvv7oUasd2Ec=
 github.com/IMQS/serviceconfigsgo v1.0.0 h1:fhxZ9FvcD5yYisiMZuP3coPF0PB5JCAL+1mHm3vYu64=
 github.com/IMQS/serviceconfigsgo v1.0.0/go.mod h1:Sal40iFTM7BqULDKrOwKuAV4swyPeCk1jWxx5zMsJsI=
 github.com/Shopify/sarama v1.19.0/go.mod h1:FVkBWblsNy7DGZRfXLU0O9RCGt5g3g3yEuWXgklEdEo=
