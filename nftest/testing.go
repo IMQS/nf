@@ -13,7 +13,7 @@ import (
 )
 
 // MakeDBConfig returns a DBConfig that is configured to run against the
-// docker Postgres image imqs/postgres:unittest-10.5 (or any other version)
+// docker Postgres image imqs/postgres:unittest-10.5 (or any other version).
 func MakeDBConfig(dbname string) nf.DBConfig {
 	return nf.DBConfig{
 		Driver:   "postgres",
@@ -79,14 +79,13 @@ func assertJSONEquals(t *testing.T, url string, expect []byte, actual []byte) {
 	}
 }
 
-// ValidateResponse validates the response body of 'resp', ensuring that it meets the criteria of expectResponse
+// ValidateResponse validates the response body of 'resp', ensuring that it meets the criteria of expectResponse.
 //
 // The validation depends on expectResponse:
-//
-// expectResponse  Validation
-// int             Ensure that the HTTP status code is equal to expectResponse
-// >>foo           Ensure that the string 'foo' can be found in the response body
-// <other>         Marshal expectResponse to JSON, and ensure the JSON matches the response body exactly (with whitespace removed)
+//  expectResponse  Validation
+//  int             Ensure that the HTTP status code is equal to expectResponse
+//  >>foo           Ensure that the string 'foo' can be found in the response body
+//  <other>         Marshal expectResponse to JSON, and ensure the JSON matches the response body exactly (with whitespace removed)
 func ValidateResponse(t *testing.T, resp *http.Response, url string, expectResponse interface{}) {
 	var err error
 	defer resp.Body.Close()
@@ -124,7 +123,7 @@ func ValidateResponse(t *testing.T, resp *http.Response, url string, expectRespo
 	}
 }
 
-// POSTJson sends a JSON object to the server, and calls ValidateResponse on the result
+// POSTJson sends a JSON object to the server, and calls ValidateResponse on the result.
 func POSTJson(t *testing.T, url string, requestBody interface{}, expectResponse interface{}) {
 	resp, err := http.DefaultClient.Post(url, "application/json", bytes.NewReader(turnAnyIntoJSON(t, requestBody)))
 	if err != nil {
@@ -133,7 +132,7 @@ func POSTJson(t *testing.T, url string, requestBody interface{}, expectResponse 
 	ValidateResponse(t, resp, url, expectResponse)
 }
 
-// GETJson hits the given URL, and calls ValidateResponse on the result
+// GETJson hits the given URL, and calls ValidateResponse on the result.
 func GETJson(t *testing.T, url string, expectResponse interface{}) {
 	resp, err := http.DefaultClient.Get(url)
 	if err != nil {
@@ -142,7 +141,7 @@ func GETJson(t *testing.T, url string, expectResponse interface{}) {
 	ValidateResponse(t, resp, url, expectResponse)
 }
 
-// GETDump gets the given URL and writes it to the test log
+// GETDump gets the given URL and writes it to the test log.
 func GETDump(t *testing.T, url string) {
 	resp, err := http.DefaultClient.Get(url)
 	if err != nil {

@@ -12,7 +12,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-// AuthenticatedHandler is an HTTP handler function that has already had authentication information read from the auth service
+// AuthenticatedHandler is an HTTP handler function that has already had authentication information read from the auth service.
 type AuthenticatedHandler func(w http.ResponseWriter, r *http.Request, p httprouter.Params, auth *serviceauth.Token)
 
 // RunProtected runs 'func' inside a panic handler that recognizes our special errors,
@@ -35,7 +35,7 @@ func RunProtected(w http.ResponseWriter, handler func()) {
 	handler()
 }
 
-// Handle adds a protected HTTP route to router (ie handle will run inside RunProtected, so you get a panic handler)
+// Handle adds a protected HTTP route to router (ie handle will run inside RunProtected, so you get a panic handler).
 func Handle(router *httprouter.Router, method, path string, handle httprouter.Handle) {
 	wrapper := func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		RunProtected(w, func() { handle(w, r, p) })
@@ -43,11 +43,11 @@ func Handle(router *httprouter.Router, method, path string, handle httprouter.Ha
 	router.Handle(method, path, wrapper)
 }
 
-// HandleAuthenticated adds a protected HTTP route to router (ie handle will run inside RunProtected, so you get a panic handler)
+// HandleAuthenticated adds a protected HTTP route to router (ie handle will run inside RunProtected, so you get a panic handler).
 // Any permission specified in needPermissions must be present in the authentication information, otherwise the handler
 // will not call your 'handle' function, but will return with 403 Forbidden.
 // In addition, the authentication token must have the 'enabled' permission set, otherwise a 403 Forbidden is returned, with
-// the response body "User Disabled"
+// the response body "User Disabled".
 func HandleAuthenticated(router *httprouter.Router, method, path string, handle AuthenticatedHandler, needPermissions []int) {
 	wrapper := func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		authCode, authMsg, authToken := serviceauth.GetToken(r)
@@ -64,13 +64,13 @@ func HandleAuthenticated(router *httprouter.Router, method, path string, handle 
 	router.Handle(method, path, wrapper)
 }
 
-// ParseID parses a 64-bit integer, and returns zero on failure
+// ParseID parses a 64-bit integer, and returns zero on failure.
 func ParseID(s string) int64 {
 	id, _ := strconv.ParseInt(s, 10, 64)
 	return id
 }
 
-// ReadJSON reads the body of the request, and unmarshals it into 'obj'
+// ReadJSON reads the body of the request, and unmarshals it into 'obj'.
 func ReadJSON(r *http.Request, obj interface{}) {
 	if r.Body == nil {
 		Panic(http.StatusBadRequest, "ReadJSON failed: Request body is empty")
@@ -83,7 +83,7 @@ func ReadJSON(r *http.Request, obj interface{}) {
 	}
 }
 
-// SendJSON encodes 'obj' to JSON, and sends it as an HTTP application/json response
+// SendJSON encodes 'obj' to JSON, and sends it as an HTTP application/json response.
 func SendJSON(w http.ResponseWriter, obj interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	b, err := json.Marshal(obj)
@@ -91,19 +91,19 @@ func SendJSON(w http.ResponseWriter, obj interface{}) {
 	w.Write(b)
 }
 
-// SendID encodes 'id' as a string, and sends it as an HTTP text/plain response
+// SendID encodes 'id' as a string, and sends it as an HTTP text/plain response.
 func SendID(w http.ResponseWriter, id interface{}) {
 	w.Header().Set("Content-Type", "text/plain")
 	fmt.Fprintf(w, "%v", id)
 }
 
-// SendOK sends "OK" as a text/plain response
+// SendOK sends "OK" as a text/plain response.
 func SendOK(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "text/plain")
 	w.Write([]byte("OK"))
 }
 
-// SendPong sends a reply to an HTTP ping request, which checks if the service is alive
+// SendPong sends a reply to an HTTP ping request, which checks if the service is alive.
 func SendPong(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "max-age=0, no-cache")

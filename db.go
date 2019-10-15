@@ -13,15 +13,15 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
-// DBConnectFlags are flags passed to OpenDB
+// DBConnectFlags are flags passed to OpenDB.
 type DBConnectFlags int
 
 const (
-	// DBConnectFlagWipeDB causes the entire DB to erased, and re-initialized from scratch (useful for unit tests)
+	// DBConnectFlagWipeDB causes the entire DB to erased, and re-initialized from scratch (useful for unit tests).
 	DBConnectFlagWipeDB DBConnectFlags = 1 << iota
 )
 
-// Model is our base class for a GORM model
+// Model is our base class for a GORM model.
 // The default GORM Model uses int, but we prefer int64
 type Model struct {
 	ID        int64 `gorm:"primary_key"`
@@ -30,7 +30,7 @@ type Model struct {
 	DeletedAt *time.Time
 }
 
-// DBConfig is the standard database config that we expect to find on our JSON config file
+// DBConfig is the standard database config that we expect to find on our JSON config file.
 type DBConfig struct {
 	Driver   string
 	Database string
@@ -38,7 +38,7 @@ type DBConfig struct {
 	Password string
 }
 
-// DSN returns a database connection string (built for Postgres only)
+// DSN returns a database connection string (built for Postgres only).
 func (db *DBConfig) DSN() string {
 	escape := func(s string) string {
 		e := strings.Builder{}
@@ -53,8 +53,8 @@ func (db *DBConfig) DSN() string {
 	return fmt.Sprintf("user=%v password=%v dbname=%v sslmode=disable", escape(db.Username), escape(db.Password), escape(db.Database))
 }
 
-// MakeMigrations turns a sequence of SQL expression into burntsushi migrations
-// If log is not null, then the run of every migration will be logged
+// MakeMigrations turns a sequence of SQL expression into burntsushi migrations.
+// If log is not null, then the run of every migration will be logged.
 func MakeMigrations(log *log.Logger, sql []string) []migration.Migrator {
 	migs := []migration.Migrator{}
 	for idx, str := range sql {
@@ -71,7 +71,7 @@ func MakeMigrations(log *log.Logger, sql []string) []migration.Migrator {
 	return migs
 }
 
-// OpenDB creates a new DB, or opens an existing one, and runs all the migrations before returning
+// OpenDB creates a new DB, or opens an existing one, and runs all the migrations before returning.
 func OpenDB(log *log.Logger, driver, dsn string, migrations []migration.Migrator, flags DBConnectFlags) (*gorm.DB, error) {
 	if flags&DBConnectFlagWipeDB != 0 {
 		if err := DropAllTables(log, driver, dsn); err != nil {
@@ -114,9 +114,9 @@ func OpenDB(log *log.Logger, driver, dsn string, migrations []migration.Migrator
 	return gormOpen(driver, dsn)
 }
 
-// DropAllTables delete all tables in the given database
-// If the database does not exist, returns nil
-// This function is intended to be used by unit tests
+// DropAllTables delete all tables in the given database.
+// If the database does not exist, returns nil.
+// This function is intended to be used by unit tests.
 func DropAllTables(log *log.Logger, driver, dsn string) error {
 	db, err := sql.Open(driver, dsn)
 	if err == nil {
@@ -200,7 +200,7 @@ func isDatabaseNotExist(err error) bool {
 	return strings.Index(err.Error(), "does not exist") != -1
 }
 
-// Create a database called dbCreateName, by connecting to dsn
+// Create a database called dbCreateName, by connecting to dsn.
 func createDB(driver, dsn, dbCreateName string) error {
 	db, err := sql.Open(driver, dsn)
 	if err != nil {
