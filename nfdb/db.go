@@ -1,9 +1,10 @@
-package nf
+package nfdb
 
 import (
 	"database/sql"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -172,6 +173,28 @@ func DropAllTables(log *log.Logger, driver, dsn string) error {
 		}
 	}
 	return tx.Commit()
+}
+
+// SQLCleanIDList turns a string such as "10,34" into the string "(10,32)", so that it can be used inside an IN clause.
+func SQLCleanIDList(raw string) string {
+	if len(raw) == 0 {
+		return "()"
+	}
+	res := strings.Builder{}
+	res.WriteRune('(')
+	parts := strings.Split(raw, ",")
+	for i, t := range parts {
+		id, err := strconv.ParseInt(t, 10, 64)
+		if err != nil {
+			continue
+		}
+		res.WriteString(strconv.FormatInt(id, 10))
+		if i != len(parts)-1 {
+			res.WriteRune(',')
+		}
+	}
+	res.WriteRune(')')
+	return res.String()
 }
 
 func gormOpen(driver, dsn string) (*gorm.DB, error) {

@@ -9,13 +9,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/IMQS/nf"
+	"github.com/IMQS/nf/nfdb"
 )
 
 // MakeDBConfig returns a DBConfig that is configured to run against the
 // docker Postgres image imqs/postgres:unittest-10.5 (or any other version).
-func MakeDBConfig(dbname string) nf.DBConfig {
-	return nf.DBConfig{
+func MakeDBConfig(dbname string) nfdb.DBConfig {
+	return nfdb.DBConfig{
 		Driver:   "postgres",
 		Database: "unittest_" + dbname,
 		Username: "unittest_user",
