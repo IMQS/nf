@@ -25,7 +25,7 @@ const (
 // Model is our base class for a GORM model.
 // The default GORM Model uses int, but we prefer int64
 type Model struct {
-	ID        *int64     `json:"id",gorm:"primary_key"`
+	ID        *int64     `json:"id" gorm:"primary_key"`
 	CreatedAt *time.Time `json:"createdAt"`
 	UpdatedAt *time.Time `json:"updatedAt"`
 	DeletedAt *time.Time `json:"deletedAt"`
