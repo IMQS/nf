@@ -59,12 +59,14 @@ func (db *DBConfig) DSN() string {
 func MakeMigrations(log *log.Logger, sql []string) []migration.Migrator {
 	migs := []migration.Migrator{}
 	for idx, str := range sql {
+		version := idx
+		query := str
 		mig := func(tx migration.LimitedTx) error {
 			if log != nil {
-				summary := strings.TrimSpace(str)
-				log.Infof("Running migration %v/%v: '%v...'", idx+1, len(sql), summary[:40])
+				summary := strings.TrimSpace(query)
+				log.Infof("Running migration %v/%v: '%v...'", version+1, len(sql), summary[:40])
 			}
-			_, err := tx.Exec(str)
+			_, err := tx.Exec(query)
 			return err
 		}
 		migs = append(migs, mig)
