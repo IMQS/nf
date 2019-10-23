@@ -3,6 +3,7 @@ package nftest
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -14,13 +15,20 @@ import (
 
 // MakeDBConfig returns a DBConfig that is configured to run against the
 // docker Postgres image imqs/postgres:unittest-10.5 (or any other version).
-func MakeDBConfig(dbname string) nfdb.DBConfig {
-	return nfdb.DBConfig{
+// If eraseDB is true, then wipe all tables in this database before returning
+func MakeDBConfig(dbname string, eraseDB bool) nfdb.DBConfig {
+	cfg := nfdb.DBConfig{
 		Driver:   "postgres",
 		Database: "unittest_" + dbname,
 		Username: "unittest_user",
 		Password: "unittest_password",
 	}
+	if eraseDB {
+		if err := nfdb.DropAllTables(nil, cfg.Driver, cfg.DSN()); err != nil {
+			fmt.Printf("Warning: DropAllTables failed: %v\n", err)
+		}
+	}
+	return cfg
 }
 
 // PingUntil200 repeatedly tries to contact pingURL until it receives a 200 response code.
