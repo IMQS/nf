@@ -4,10 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/IMQS/serviceauth"
@@ -65,61 +62,6 @@ func HandleAuthenticated(router *httprouter.Router, method, path string, handle 
 		RunProtected(w, func() { handle(w, r, p, authToken) })
 	}
 	router.Handle(method, path, wrapper)
-}
-
-type httpFallback struct {
-	indexFile string
-}
-
-func (h *httpFallback) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	//fmt.Printf("fallback: %v\n", r.RequestURI)
-	if strings.HasPrefix(r.URL.Path, "/api/") {
-		http.Error(w, "Not a valid API", 404)
-		return
-	}
-	http.ServeFile(w, r, h.indexFile)
-}
-
-func pathExists(fn string) bool {
-	_, err := os.Stat(fn)
-	return err == nil
-}
-
-// HandleStaticFiles creates a catch-all handler that serves up static files if they exist, or returns /index.html if the path does not exist.
-// The function first tries to see if www/dist exists, relative to the current directory, and if this does exist, then it uses that.
-// If www/dist does not exist, and we're running in a container, then the function looks for /var/www, and if that exists, then it uses that.
-// If neither of these options succeed, then the function panics
-func HandleStaticFiles(router *httprouter.Router) {
-	pwd, _ := os.Getwd()
-	wwwFilesRoot := ""
-	{
-		relative := filepath.Join(pwd, "www", "dist")
-		container := "/var/www"
-		if pathExists(relative) {
-			// This is when running in dev mode, and you type "go run main.go"
-			wwwFilesRoot = relative
-		} else if IsRunningInContainer() && pathExists(container) {
-			wwwFilesRoot = container
-		} else {
-			panic(fmt.Sprintf("Unable to find a 'www' root directory in %v or %v", relative, container))
-		}
-	}
-
-	staticFilesStrip := http.StripPrefix("/static", http.FileServer(http.Dir(wwwFilesRoot)))
-	staticFiles := http.FileServer(http.Dir(wwwFilesRoot))
-	router.Handle("GET", "/static/*path", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-		//fmt.Printf("GET /static: %v\n", r.RequestURI)
-		staticFilesStrip.ServeHTTP(w, r)
-	})
-	router.Handle("GET", "/robots.txt", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-		staticFiles.ServeHTTP(w, r)
-	})
-	router.Handle("GET", "/favicon.ico", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-		staticFiles.ServeHTTP(w, r)
-	})
-	router.NotFound = &httpFallback{
-		indexFile: filepath.Join(wwwFilesRoot, "index.html"),
-	}
 }
 
 // ParseID parses a 64-bit integer, and returns zero on failure.
