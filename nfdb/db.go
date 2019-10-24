@@ -34,6 +34,7 @@ type Model struct {
 // DBConfig is the standard database config that we expect to find on our JSON config file.
 type DBConfig struct {
 	Driver   string
+	Host     string
 	Database string
 	Username string
 	Password string
@@ -51,7 +52,7 @@ func (db *DBConfig) DSN() string {
 		}
 		return e.String()
 	}
-	return fmt.Sprintf("user=%v password=%v dbname=%v sslmode=disable", escape(db.Username), escape(db.Password), escape(db.Database))
+	return fmt.Sprintf("host=%v user=%v password=%v dbname=%v sslmode=disable", escape(db.Host), escape(db.Username), escape(db.Password), escape(db.Database))
 }
 
 // MakeMigrations turns a sequence of SQL expression into burntsushi migrations.
