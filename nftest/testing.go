@@ -20,6 +20,7 @@ func MakeDBConfig(dbname string, eraseDB bool) nfdb.DBConfig {
 	cfg := nfdb.DBConfig{
 		Driver:   "postgres",
 		Database: "unittest_" + dbname,
+		Host: "localhost",
 		Username: "unittest_user",
 		Password: "unittest_password",
 	}
