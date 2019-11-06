@@ -22,10 +22,21 @@ const (
 	DBConnectFlagWipeDB DBConnectFlags = 1 << iota
 )
 
-// Model is our base class for a GORM model.
+// BaseModel is our base class for a GORM model.
 // The default GORM Model uses int, but we prefer int64
+type BaseModel struct {
+	ID *int64 `json:"id" gorm:"primary_key"`
+}
+
+// LookupModel is our base class for lookups we want to interact with using GORM
+type LookupModel struct {
+	BaseModel
+	Name *string `json:"name"`
+}
+
+// Model was previously our base model, but now this comes complete with some date fields for warehousing of information
 type Model struct {
-	ID        *int64     `json:"id" gorm:"primary_key"`
+	BaseModel
 	CreatedAt *time.Time `json:"createdAt"`
 	UpdatedAt *time.Time `json:"updatedAt"`
 	DeletedAt *time.Time `json:"deletedAt"`
