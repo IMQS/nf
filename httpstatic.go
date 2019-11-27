@@ -16,6 +16,8 @@ type httpFallback struct {
 }
 
 func (h *httpFallback) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	addCacheExpiryHeaders(w)
+
 	//fmt.Printf("fallback: %v\n", r.RequestURI)
 	if h.publicPath != "" && !strings.HasPrefix(r.URL.Path, h.publicPath) {
 		http.Error(w, "Invalid router config. All URLs to this service should being with "+h.publicPath, 404)
@@ -32,6 +34,28 @@ func (h *httpFallback) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func pathExists(fn string) bool {
 	_, err := os.Stat(fn)
 	return err == nil
+}
+
+func addCacheExpiryHeaders(w http.ResponseWriter) {
+	// NOTE: This is not trivial. You need just the magic combination of headers to get this working
+	// on IE and the other browsers.
+	// See https://stackoverflow.com/questions/5017454/make-ie-to-cache-resources-but-always-revalidate
+	//
+	// The behaviour we're looking for here is:
+	// * Whenever the browser navigates to our site, it must first revalidate it's cache by sending
+	// through the ETags for it's cached resources.
+	// * We want this behaviour on HTTP and HTTPS.
+	//
+	// IE has different behaviour for HTTP and HTTPS, so if you want to change this, then you must validate
+	// your change on all 8 combinations for Chrome,Firefox,IE,Edge x HTTP,HTTPS
+	//
+	// One final thing: After 2 refreshes on Firefox, it stops sending through the ETag for vendor.js.
+	// It only exhibits this behaviour on vendor.js, so it looks like a bug in Firefox to me. I cannot
+	// discern any different in the responses that we make for vendor.js and main.js.
+	// This was Firefox 60.0b11 (64-bit) (Beta Channel) on Windows 10.
+	//
+	w.Header().Add("Cache-Control", "public, must-revalidate")
+	w.Header().Add("Expires", "-1")
 }
 
 // HandleStaticFiles creates a catch-all handler that serves up static files if they exist, or returns /index.html if the path does not exist.
@@ -69,6 +93,8 @@ func HandleStaticFiles(router *httprouter.Router, publicPath string) {
 	staticFilesStrip := http.StripPrefix(publicStatic, http.FileServer(http.Dir(wwwFilesRoot)))
 
 	router.Handle("GET", publicStatic+"/*path", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		addCacheExpiryHeaders(w)
+
 		//fmt.Printf("GET %v: %v\n", publicStatic, r.RequestURI)
 		staticFilesStrip.ServeHTTP(w, r)
 	})
