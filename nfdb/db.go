@@ -76,7 +76,11 @@ func MakeMigrations(log *log.Logger, sql []string) []migration.Migrator {
 		mig := func(tx migration.LimitedTx) error {
 			if log != nil {
 				summary := strings.TrimSpace(query)
-				log.Infof("Running migration %v/%v: '%v...'", version+1, len(sql), summary[:40])
+				var l int
+				if l = len(summary) - 1; l > 40 {
+					l = 40
+				}
+				log.Infof("Running migration %v/%v: '%v...'", version+1, len(sql), summary[:l])
 			}
 			_, err := tx.Exec(query)
 			return err
