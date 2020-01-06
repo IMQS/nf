@@ -91,6 +91,12 @@ func SendJSON(w http.ResponseWriter, obj interface{}) {
 	w.Write(b)
 }
 
+// SendYML encodes 'obj' to a byte array, and sends it as an HTTP text/yaml response.
+func SendYML(w http.ResponseWriter, yml []byte) {
+	w.Header().Set("Content-Type", "text/yml")
+	w.Write(yml)
+}
+
 // SendID encodes 'id' as a string, and sends it as an HTTP text/plain response.
 func SendID(w http.ResponseWriter, id interface{}) {
 	w.Header().Set("Content-Type", "text/plain")
