@@ -30,7 +30,7 @@ type BaseModel struct {
 
 // LookupModel is our base class for lookups we want to interact with using GORM
 type LookupModel struct {
-	BaseModel
+	ID   *int    `json:"id" gorm:"primary_key"`
 	Name *string `json:"name"`
 }
 
