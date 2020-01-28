@@ -20,7 +20,7 @@ func MakeDBConfig(dbname string, eraseDB bool) nfdb.DBConfig {
 	cfg := nfdb.DBConfig{
 		Driver:   "postgres",
 		Database: "unittest_" + dbname,
-		Host: "localhost",
+		Host:     "localhost",
 		Username: "unittest_user",
 		Password: "unittest_password",
 	}
@@ -141,13 +141,32 @@ func POSTJson(t *testing.T, url string, requestBody interface{}, expectResponse 
 	ValidateResponse(t, resp, url, expectResponse)
 }
 
-// GETJson hits the given URL, and calls ValidateResponse on the result.
-func GETJson(t *testing.T, url string, expectResponse interface{}) {
+// GETAndValidateJson hits the given URL, and calls ValidateResponse on the result.
+func GETAndValidateJson(t *testing.T, url string, expectResponse interface{}) {
 	resp, err := http.DefaultClient.Get(url)
 	if err != nil {
 		t.Fatalf("Failed to connect to %v: %v", url, err)
 	}
 	ValidateResponse(t, resp, url, expectResponse)
+}
+
+// GETJson returns a byte array that responsd t
+func GETBytes(t *testing.T, url string) ([]byte, error) {
+	resp, err := http.DefaultClient.Get(url)
+	if err != nil {
+		t.Fatalf("Failed to connect to %v: %v", url, err)
+		return nil, err
+	}
+	if resp.StatusCode != 200 {
+		t.Fatalf("Response failed with the following status code: %v", resp.StatusCode)
+		return nil, err
+	}
+	out, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatalf("Failed to read content body")
+		return nil, err
+	}
+	return out, nil
 }
 
 // GETDump gets the given URL and writes it to the test log.
