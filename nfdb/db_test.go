@@ -133,8 +133,8 @@ func TestGeom(t *testing.T) {
 		t.Fatalf("Failed to get the name of the geometry field from the GORM struct 'PolyTable': %v", err)
 	}
 
-	if *columnName != "Geometry" {
-		t.Fatalf("Unexpected geometry field name for GORM struct 'PolyTable'. Expected name should be 'Geometry', got '%v'", *columnName)
+	if columnName != "Geometry" {
+		t.Fatalf("Unexpected geometry field name for GORM struct 'PolyTable'. Expected name should be 'Geometry', got '%v'", columnName)
 	}
 
 	// Test getting GetGeoJSON from a model

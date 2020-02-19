@@ -5,17 +5,24 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"sync"
 
 	"github.com/jinzhu/gorm"
 	"github.com/twpayne/go-geom/encoding/ewkb"
 	"github.com/twpayne/go-geom/encoding/geojson"
 )
 
+var tableGeomMap sync.Map
+
 // GetGeometryColumn returns the name of the geometry column in the GORM struct.
 // Returns the columnName and an error
-func GetGeometryColumn(db *gorm.DB, model interface{}) (*string, error) {
+func GetGeometryColumn(db *gorm.DB, model interface{}) (string, error) {
 	r := reflect.ValueOf(model).Elem().Type()
 	tableName := r.Name()
+
+	if columnName, ok := tableGeomMap.Load(tableName); ok {
+		return columnName.(string), nil
+	}
 
 	res := struct {
 		FGeometryColumn string
@@ -29,9 +36,9 @@ func GetGeometryColumn(db *gorm.DB, model interface{}) (*string, error) {
 	).Scan(&res).Error
 	if err != nil {
 		if err.Error() == "record not found" {
-			return nil, errors.New("No geometry field found")
+			return "", errors.New("No geometry field found")
 		}
-		return nil, err
+		return "", err
 	}
 
 	columnName := ""
@@ -45,10 +52,12 @@ func GetGeometryColumn(db *gorm.DB, model interface{}) (*string, error) {
 	}
 
 	if columnName == "" {
-		return nil, fmt.Errorf("Could not find matching geometry field in GORM struct")
+		return "", fmt.Errorf("Could not find matching geometry field in GORM struct")
 	}
 
-	return &columnName, nil
+	tableGeomMap.Store(tableName, columnName)
+
+	return columnName, nil
 }
 
 // GetGeoJSON marshals the geometry associated with the model into a GeoJSON
@@ -60,7 +69,7 @@ func GetGeoJSON(db *gorm.DB, model interface{}) (*geojson.Geometry, error) {
 	}
 
 	r := reflect.ValueOf(model).Elem()
-	strGeom := r.FieldByName(*geomColumn).String()
+	strGeom := r.FieldByName(geomColumn).String()
 	rawGeom, err := hex.DecodeString(strGeom)
 	if err != nil {
 		return nil, fmt.Errorf("while decoding geom string: %v", err)
