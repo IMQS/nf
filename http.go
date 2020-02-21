@@ -123,7 +123,8 @@ func SendOK(w http.ResponseWriter) {
 	w.Write([]byte("OK"))
 }
 
-// SendPong sends a reply to an HTTP ping request, which checks if the service is alive.
+// SendPong sends a reply to an HTTP ping request, which checks if the service
+// is alive.
 func SendPong(w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "max-age=0, no-cache")
