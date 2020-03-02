@@ -12,6 +12,10 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// BypassAuth changes the `HandleAuthenticated` function to affectively be the
+// `Handle` function. The value of the auth token becomes `nil`.
+var BypassAuth bool = false
+
 // AuthenticatedHandler is an HTTP handler function that has already had authentication information read from the auth service.
 type AuthenticatedHandler func(w http.ResponseWriter, r *http.Request, p httprouter.Params, auth *serviceauth.Token)
 
@@ -49,17 +53,24 @@ func Handle(router *httprouter.Router, method, path string, handle httprouter.Ha
 // In addition, the authentication token must have the 'enabled' permission set, otherwise a 403 Forbidden is returned, with
 // the response body "User Disabled".
 func HandleAuthenticated(router *httprouter.Router, method, path string, handle AuthenticatedHandler, needPermissions []int) {
-	wrapper := func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-		authCode, authMsg, authToken := serviceauth.GetToken(r)
-		if authCode != http.StatusOK {
-			http.Error(w, authMsg, authCode)
-			return
+	var wrapper func(w http.ResponseWriter, r *http.Request, p httprouter.Params)
+	if BypassAuth {
+		wrapper = func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+			RunProtected(w, func() { handle(w, r, p, nil) })
 		}
-		if !authToken.HasPermByID(permissions.PermEnabled) {
-			http.Error(w, "User Disabled", http.StatusForbidden)
-			return
+	} else {
+		wrapper = func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+			authCode, authMsg, authToken := serviceauth.GetToken(r)
+			if authCode != http.StatusOK {
+				http.Error(w, authMsg, authCode)
+				return
+			}
+			if !authToken.HasPermByID(permissions.PermEnabled) {
+				http.Error(w, "User Disabled", http.StatusForbidden)
+				return
+			}
+			RunProtected(w, func() { handle(w, r, p, authToken) })
 		}
-		RunProtected(w, func() { handle(w, r, p, authToken) })
 	}
 	router.Handle(method, path, wrapper)
 }
