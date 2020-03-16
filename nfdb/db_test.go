@@ -13,8 +13,8 @@ import (
 
 const (
 	DBHOST     = "localhost"
-	DBUSER     = "unit_test_user"
-	DBPASSWORD = "unit_test_password"
+	DBUSER     = "unittest_user"
+	DBPASSWORD = "unittest_password"
 	DBNAME     = "nftest"
 )
 

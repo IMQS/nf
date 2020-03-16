@@ -44,26 +44,55 @@ type Model struct {
 
 // DBConfig is the standard database config that we expect to find on our JSON config file.
 type DBConfig struct {
-	Driver   string
-	Host     string
-	Database string
-	Username string
-	Password string
+	Driver      string
+	Host        string
+	Port        int
+	Database    string
+	Username    string
+	Password    string
+	SSLCert     string
+	SSLKey      string
+	SSLRootCert string
+}
+
+// LogSafeDescription seturn a string that is useful for debugging connection issues, but doesn't leak secrets
+func (db *DBConfig) LogSafeDescription() string {
+	desc := fmt.Sprintf("driver=%s host=%v database=%v username=%v", db.Driver, db.Host, db.Database, db.Username)
+	if db.Port != 0 {
+		desc += fmt.Sprintf(" port=%v", db.Port)
+	}
+	return desc
 }
 
 // DSN returns a database connection string (built for Postgres only).
 func (db *DBConfig) DSN() string {
 	escape := func(s string) string {
+		if s == "" {
+			return "''"
+		} else if !strings.ContainsAny(s, " '\\") {
+			return s
+		}
 		e := strings.Builder{}
+		e.WriteRune('\'')
 		for _, r := range s {
-			if r == ' ' || r == '\'' {
+			if r == '\\' || r == '\'' {
 				e.WriteRune('\\')
 			}
 			e.WriteRune(r)
 		}
+		e.WriteRune('\'')
 		return e.String()
 	}
-	return fmt.Sprintf("host=%v user=%v password=%v dbname=%v sslmode=disable", escape(db.Host), escape(db.Username), escape(db.Password), escape(db.Database))
+	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v", escape(db.Host), escape(db.Username), escape(db.Password), escape(db.Database))
+	if db.Port != 0 {
+		dsn += fmt.Sprintf("port=%v", db.Port)
+	}
+	if db.SSLKey != "" {
+		dsn += fmt.Sprintf(" sslmode=require sslcert=%v sslkey=%v sslrootcert=%v", escape(db.SSLCert), escape(db.SSLKey), escape(db.SSLRootCert))
+	} else {
+		dsn += fmt.Sprintf(" sslmode=disable")
+	}
+	return dsn
 }
 
 // MakeMigrations turns a sequence of SQL expression into burntsushi migrations.
@@ -79,6 +108,10 @@ func MakeMigrations(log *log.Logger, sql []string) []migration.Migrator {
 				var l int
 				if l = len(summary) - 1; l > 40 {
 					l = 40
+				}
+				firstNewline := strings.IndexAny(summary, "\n\r")
+				if firstNewline != -1 && firstNewline < l {
+					l = firstNewline
 				}
 				log.Infof("Running migration %v/%v: '%v...'", version+1, len(sql), summary[:l])
 			}
@@ -186,7 +219,7 @@ func DropAllTables(log *log.Logger, driver, dsn string) error {
 		//if log != nil {
 		//	log.Warnf("Dropping table %v", table)
 		//}
-		if _, err := tx.Exec(fmt.Sprintf("DROP TABLE %v", table)); err != nil {
+		if _, err := tx.Exec(fmt.Sprintf("DROP TABLE %v CASCADE", table)); err != nil {
 			return err
 		}
 	}
