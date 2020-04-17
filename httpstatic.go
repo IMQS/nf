@@ -28,6 +28,15 @@ func (h *httpFallback) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Not a valid API", 404)
 		return
 	}
+	// Experimental code for the sake of making the signout redirect working
+	// // If the user is not logged in, the user will be redirected to the Login page
+	// if httpCode, _, _ := serviceauth.VerifyUserHasPermission(r, "enabled"); httpCode != http.StatusOK {
+	// 	r.URL.Query().Set("redirect", r.URL.Path)
+	// 	url := fmt.Sprintf("/login?redirect=%v", q)
+	// 	http.Redirect(w, r, url, http.StatusUnauthorized)
+	// 	return
+	// }
+
 	http.ServeFile(w, r, h.indexFile)
 }
 
