@@ -65,7 +65,7 @@ func HandleAuthenticated(router *httprouter.Router, method, path string, handle 
 				http.Error(w, authMsg, authCode)
 				return
 			}
-			if !authToken.HasPermByID(permissions.PermEnabled) {
+			if !(authToken.IsInterService || authToken.HasPermByID(permissions.PermEnabled)) {
 				http.Error(w, "User Disabled", http.StatusForbidden)
 				return
 			}

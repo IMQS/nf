@@ -52,6 +52,11 @@ func PanicServerErrorf(format string, args ...interface{}) {
 	panic(HTTPError{http.StatusInternalServerError, fmt.Sprintf(format, args...)})
 }
 
+// PanicConflictErrorf panics with a 409 Conflict Error
+func PanicConflictErrorf(format string, args ...interface{}) {
+	panic(HTTPError{http.StatusConflict, fmt.Sprintf(format, args...)})
+}
+
 // Check causes a panic if err is not nil.
 func Check(err error) {
 	if err != nil {

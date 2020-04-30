@@ -85,7 +85,7 @@ func (db *DBConfig) DSN() string {
 	}
 	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v", escape(db.Host), escape(db.Username), escape(db.Password), escape(db.Database))
 	if db.Port != 0 {
-		dsn += fmt.Sprintf("port=%v", db.Port)
+		dsn += fmt.Sprintf(" port=%v", db.Port)
 	}
 	if db.SSLKey != "" {
 		dsn += fmt.Sprintf(" sslmode=require sslcert=%v sslkey=%v sslrootcert=%v", escape(db.SSLCert), escape(db.SSLKey), escape(db.SSLRootCert))
