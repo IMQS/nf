@@ -37,6 +37,11 @@ func PanicNotFound() {
 	panic(HTTPError{http.StatusNotFound, "Not Found"})
 }
 
+// PanicNotFoundf panics with a 500 Internal Server Error
+func PanicNotFoundf(format string, args ...interface{}) {
+	panic(HTTPError{http.StatusNotFound, fmt.Sprintf(format, args...)})
+}
+
 // PanicServerError panics with a 500 Internal Server Error
 func PanicServerError(msg string) {
 	panic(HTTPError{http.StatusInternalServerError, msg})
