@@ -102,6 +102,11 @@ func SendJSON(w http.ResponseWriter, obj interface{}) {
 	w.Write(b)
 }
 
+// SendNoContent returns a 204 to the client
+func SendNoContent(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusNoContent)
+}
+
 // SendText converts text (of type string) into a the array and sends it as an
 // HTTP text/plain response
 func SendText(w http.ResponseWriter, text string) {
