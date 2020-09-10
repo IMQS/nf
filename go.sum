@@ -18,6 +18,8 @@ github.com/IMQS/serviceauth v1.0.0 h1:eDLkG2ETp1DZNuULa4xIYhBTPGOApqNwJrH64Ld6fP
 github.com/IMQS/serviceauth v1.0.0/go.mod h1:k9X6RfjZyFzhAaB6fjFuBdbQRkzlAj7Vvv7oUasd2Ec=
 github.com/IMQS/serviceauth v1.0.1 h1:UX/+Rf+ICAKFFx46XWCAFfXShe8SDKvXTBDFAhyNxnY=
 github.com/IMQS/serviceauth v1.0.1/go.mod h1:k9X6RfjZyFzhAaB6fjFuBdbQRkzlAj7Vvv7oUasd2Ec=
+github.com/IMQS/serviceauth v1.0.3 h1:Fn4MnvXHUSykhY56jc8TGcXdkflLMbtwXe9DNm2oMNI=
+github.com/IMQS/serviceauth v1.0.3/go.mod h1:yPZpbaIQNwbS2LD9I1k+IDSKBGbp4y179rRyG0DZe1U=
 github.com/IMQS/serviceconfigsgo v1.0.0 h1:fhxZ9FvcD5yYisiMZuP3coPF0PB5JCAL+1mHm3vYu64=
 github.com/IMQS/serviceconfigsgo v1.0.0/go.mod h1:Sal40iFTM7BqULDKrOwKuAV4swyPeCk1jWxx5zMsJsI=
 github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5/go.mod h1:lmUJ/7eu/Q8D7ML55dXQrVaamCz2vxCfdQBasLZfHKk=
