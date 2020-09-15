@@ -10,6 +10,7 @@ import (
 	"github.com/IMQS/serviceauth"
 	"github.com/IMQS/serviceauth/permissions"
 	"github.com/julienschmidt/httprouter"
+	"gopkg.in/yaml.v2"
 )
 
 // BypassAuth changes the `HandleAuthenticated` function to affectively be the
@@ -122,8 +123,10 @@ func SendBytes(w http.ResponseWriter, bytes []byte) {
 }
 
 // SendYML encodes 'obj' to a byte array, and sends it as an HTTP text/yaml response.
-func SendYML(w http.ResponseWriter, yml []byte) {
+func SendYML(w http.ResponseWriter, obj interface{}) {
 	w.Header().Set("Content-Type", "text/yml")
+	yml, err := yaml.Marshal(obj)
+	Check(err)
 	w.Write(yml)
 }
 
