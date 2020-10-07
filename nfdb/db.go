@@ -20,6 +20,8 @@ type DBConnectFlags int
 const (
 	// DBConnectFlagWipeDB causes the entire DB to erased, and re-initialized from scratch (useful for unit tests).
 	DBConnectFlagWipeDB DBConnectFlags = 1 << iota
+	// DBDoNotMigrate allows the user to open a connection to the database without performing migrations on it
+	DBDoNotMigrate
 )
 
 // BaseModel is our base class for a GORM model.
@@ -124,11 +126,19 @@ func MakeMigrations(log *log.Logger, sql []string) []migration.Migrator {
 }
 
 // OpenDB creates a new DB, or opens an existing one, and runs all the migrations before returning.
+// Migrations will not be performed on a database in any of the following three cases:
+// (a) Method is called with the correct DBConnect flags (DBDoNotMigrate)
+// (b) Method is called with migrations object set to nil
+// (c) Method is called with migrations object having no objects in it (length == 0)
 func OpenDB(log *log.Logger, driver, dsn string, migrations []migration.Migrator, flags DBConnectFlags) (*gorm.DB, error) {
 	if flags&DBConnectFlagWipeDB != 0 {
 		if err := DropAllTables(log, driver, dsn); err != nil {
 			return nil, err
 		}
+	}
+
+	if flags&DBDoNotMigrate != 0 || migrations == nil || len(migrations) == 0 {
+		return gormOpen(driver, dsn)
 	}
 
 	// This is the common fast path, where the database has been created
