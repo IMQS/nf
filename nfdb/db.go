@@ -55,11 +55,12 @@ type DBConfig struct {
 	SSLCert     string
 	SSLKey      string
 	SSLRootCert string
+	SSLMode		string // Use this if the connection needs sslmode=require or similar, but no local certificates are available.
 }
 
-// LogSafeDescription seturn a string that is useful for debugging connection issues, but doesn't leak secrets
+// LogSafeDescription return a string that is useful for debugging connection issues, but doesn't leak secrets
 func (db *DBConfig) LogSafeDescription() string {
-	desc := fmt.Sprintf("driver=%s host=%v database=%v username=%v", db.Driver, db.Host, db.Database, db.Username)
+	desc := fmt.Sprintf("driver=%s host=%v database=%v username=%v sslmode=%v", db.Driver, db.Host, db.Database, db.Username, db.SSLMode)
 	if db.Port != 0 {
 		desc += fmt.Sprintf(" port=%v", db.Port)
 	}
@@ -91,6 +92,8 @@ func (db *DBConfig) DSN() string {
 	}
 	if db.SSLKey != "" {
 		dsn += fmt.Sprintf(" sslmode=require sslcert=%v sslkey=%v sslrootcert=%v", escape(db.SSLCert), escape(db.SSLKey), escape(db.SSLRootCert))
+	} else if db.SSLMode != "" {
+		dsn += fmt.Sprintf(" sslmode=%v", db.SSLMode)
 	} else {
 		dsn += fmt.Sprintf(" sslmode=disable")
 	}
