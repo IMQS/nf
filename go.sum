@@ -8,16 +8,10 @@ github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/DATA-DOG/go-sqlmock v1.3.2 h1:2L2f5t3kKnCLxnClDD/PrDfExFFa1wjESgxHG/B1ibo=
 github.com/DATA-DOG/go-sqlmock v1.3.2/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
-github.com/IMQS/gowinsvc v0.0.0-20171019081213-88eed8ddfe95 h1:UFPSgk5/RyJWpCTKpuku3lrBCEI8s3ty40Y6TRocgaA=
-github.com/IMQS/gowinsvc v0.0.0-20171019081213-88eed8ddfe95/go.mod h1:b69ORxZbSjMy1Jsk8LCZ9JWNo2iIl5VXQVmp3jdKIMY=
-github.com/IMQS/log v1.0.0 h1:Cb4MXJZsnUSzDWRe4UOPvc4oKTh3nunb2MeRhAOaE3c=
-github.com/IMQS/log v1.0.0/go.mod h1:NTJ+eKRXwfBr8tRKA7/JsTKeTqHluJkuZsD7YotVj48=
+github.com/IMQS/gowinsvc v0.0.0-20220601052852-62ce07b0ae0b h1:UoYC6fmg+eG8QgfYiXEvzrAjXzqnvX4rOo50O7CXeZM=
+github.com/IMQS/gowinsvc v0.0.0-20220601052852-62ce07b0ae0b/go.mod h1:/J9Vz5JKF3/Mn3bEWVA2FprLbvkLV3WO0FRCakF2v+g=
 github.com/IMQS/log v1.0.1 h1:jye0sZbPQj9psms0dAzZJK3yF3ldCNNVQEX8mEcWuS8=
 github.com/IMQS/log v1.0.1/go.mod h1:NTJ+eKRXwfBr8tRKA7/JsTKeTqHluJkuZsD7YotVj48=
-github.com/IMQS/serviceauth v1.0.0 h1:eDLkG2ETp1DZNuULa4xIYhBTPGOApqNwJrH64Ld6fPk=
-github.com/IMQS/serviceauth v1.0.0/go.mod h1:k9X6RfjZyFzhAaB6fjFuBdbQRkzlAj7Vvv7oUasd2Ec=
-github.com/IMQS/serviceauth v1.0.1 h1:UX/+Rf+ICAKFFx46XWCAFfXShe8SDKvXTBDFAhyNxnY=
-github.com/IMQS/serviceauth v1.0.1/go.mod h1:k9X6RfjZyFzhAaB6fjFuBdbQRkzlAj7Vvv7oUasd2Ec=
 github.com/IMQS/serviceauth v1.0.3 h1:Fn4MnvXHUSykhY56jc8TGcXdkflLMbtwXe9DNm2oMNI=
 github.com/IMQS/serviceauth v1.0.3/go.mod h1:yPZpbaIQNwbS2LD9I1k+IDSKBGbp4y179rRyG0DZe1U=
 github.com/IMQS/serviceconfigsgo v1.0.0 h1:fhxZ9FvcD5yYisiMZuP3coPF0PB5JCAL+1mHm3vYu64=
@@ -158,6 +152,8 @@ golang.org/x/sys v0.0.0-20181116152217-5ac8a444bdc5/go.mod h1:STP8DvDyc/dI5b8T5h
 golang.org/x/sys v0.0.0-20181122145206-62eef0e2fa9b/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190405154228-4b34438f7a67/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20211111213525-f221eed1c01e h1:zeJt6jBtVDK23XK9QXcmG0FvO0elikp0dYZQZOeL1y0=
+golang.org/x/sys v0.0.0-20211111213525-f221eed1c01e/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.1-0.20180807135948-17ff2d5776d2/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/time v0.0.0-20181108054448-85acf8d2951c/go.mod h1:tRJNPiyCQ0inRvYxbN9jk5I+vvW/OXSQhTDSoE431IQ=
