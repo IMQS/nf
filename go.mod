@@ -1,6 +1,6 @@
 module github.com/IMQS/nf
 
-go 1.22.7
+go 1.22
 
 require (
 	github.com/BurntSushi/migration v0.0.0-20140125045755-c45b897f1335
