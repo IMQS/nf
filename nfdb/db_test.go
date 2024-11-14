@@ -8,7 +8,7 @@ import (
 
 	"github.com/IMQS/log"
 	"github.com/jinzhu/gorm"
-	"gotest.tools/assert"
+	"gotest.tools/v3/assert"
 )
 
 const (
@@ -46,7 +46,7 @@ func CreateTestMigrations() []string {
 func CreateTestDB(t *testing.T) *gorm.DB {
 	var flags DBConnectFlags
 	flags |= DBConnectFlagWipeDB
-	log := log.New(log.Stdout)
+	log := log.New(log.Stdout, false)
 	db, err := OpenDB(
 		log,
 		"postgres",
